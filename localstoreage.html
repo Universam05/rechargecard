@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+// Local storage is an object that is used in storing data and it has a max capacity in storing data.
+
+// how to save something into the local storage
+
+localStorage.setItem('studentObj',JSON.stringify({name:'Daniel', class:'Jss3'}))
+
+
+
+let myObj=JSON.parse(localStorage.getItem('studentObj'));
+console.log(myObj);
+// localStorage.removeItem('studentObj')
+
+// localStorage.clear()
+
+</script>
