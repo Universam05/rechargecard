@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        table,
+        tbody,
+        thead,
+        th,
+        td,
+        tr {
+            border-collapse: collapse;
+            padding: 10px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <select name="" id="Provider">
+        <option value=""> choose provider</option>
+        <option value="MTN"> MTN</option>
+        <option value="GLO"> GLO </option>
+        <option value="AIRTEL"> AIRTEL</option>
+        <option value="9MOBILE"> 9MOBILE </option>
+    </select>
+    <select name="" id="Amount">
+        <option value=""> choose amount </option>
+        <option value="100"> 100 </option>
+        <option value="200"> 200 </option>
+        <option value="500"> 500</option>
+        <option value="1000"> 1000 </option>
+    </select>
+    <p id="pin"> </p>
+    <button onclick="generate()"> Generate Pin </button>
+
+
+    <input type="text" id="input">
+    <button onclick="loadRechargeCard()">Load Card</button>
+    <table>
+        <thead>
+            <th>
+                s/n
+            </th>
+            <th>
+                provider
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                used
+            </th>
+            <th>
+                pin
+            </th>
+        </thead>
+        <tbody id="tbody">
+        </tbody>
+    </table>
+
+</body>
+</html>
+<script>
+    let cardDatabase = JSON.parse(localStorage.getItem('card'))||[]
+
+// // Or statrement when both false value take the last falsy value, 
+// when both are true it takes the first truthy value
+// empty array and object is not a falsy value
+//  but when one is false and true it takes the truthy value whether in front or back
+
+
+
+    // localStorage.setItem('studentObj', JSON.stringify({ name: 'daniel', class: "ss2" }))
+    // let myObj = JSON.parse(localStorage.getItem('studentObj'))
+    // console.log(myObj);
+    // localStorage.removeItem('studentObj')
+    function generate() {
+        if (!Provider.value || !Amount.value) {
+            alert('all fields are mandatory')
+        } else {
+            // pin.innerHTML = ` ${Math.floor(Math.random() * (10 ** 12))} , ${(Math.floor(Math.random() * (10 ** 12))).toString().length}`
+            let myPin = ''
+            for (let index = 0; index < 12; index++) {
+                let randomNum = Math.floor(Math.random() * 10)
+                myPin = myPin + randomNum
+            }
+            pin.innerHTML = `${myPin}`
+            let pinObj = {
+                provider: Provider.value,
+                amount: Amount.value,
+                pin: myPin,
+                used: false
+            }
+            cardDatabase.push(pinObj)
+            localStorage.setItem('card',JSON.stringify(cardDatabase))
+            console.log(cardDatabase);
+        }
+
+       
+    //    cardDatabase.forEach((element )=> {
+    //     tbody.innerHTML += ` <tr>
+    //             <td>${serialNum++} </td>
+    //             <td>${cardDatabase[0]} </td>
+    //             <td> ${cardDatabase[1]}</td>
+    //             <td> ${cardDatabase[2]}</td>
+    //         </tr>`
+
+    //         console.log(tbody);
+            
+    //    });
+
+
+    function display() {
+    tbody.innerHTML = ''
+        cardDatabase.forEach((card, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${index+1}</td>
+                    <td>${card.provider}</td>
+                    <td>${card.amount}</td>
+                    <td>${card.used}</td>
+                    <td>${card.pin}</td>
+                </tr>`;
+        });
+   }
+   display()
+    }
+
+   
+
+
+    function loadRechargeCard() {
+        let card = document.getElementById('input').value.trim()
+        console.log(card);
+
+        let thePin = card.slice(5,17)
+        console.log(thePin);
+        
+        let foundCard = cardDatabase.find((cardObj, index, arr)=> {return cardObj.pin===thePin})
+        console.log(foundCard);
+
+        if (card ==='') {
+            alert('all field are mandatory')
+        } else if(!foundCard) {
+            alert('pin does not exist')
+        } else if(card.startsWith('*311*') || card.endsWith('#')) {
+            alert('invalid card format')
+        }else if(foundCard === true){
+ alert('this card has already been used')
+        }
+        else{
+            alert(`you have successfully recharge N${foundCard.amount} ${foundCard.provider}`)
+            foundCard.used = true
+            localStorage.setItem('cards', JSON.stringify(cardDatabase))
+        }
+        
+        
+    }
+
+    function checkInput() {
+        let myCard = document.getElementById('input').value.trim()
+
+        if (myCard.lenght > 17) {
+            document.getElementById('input').value = myCard.slice(0, 18)
+        }
+        
+    }
+
+
+</script>
